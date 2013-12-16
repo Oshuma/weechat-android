@@ -271,12 +271,20 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
                 break;
             }
             case R.id.menu_close: {
-                if (viewPager.getCurrentItem()>0 || tabletMode) {
+                if (viewPager.getCurrentItem() > 0 || tabletMode) {
                     BufferFragment currentBuffer = mainPagerAdapter.getCurrentBuffer();
                     if (currentBuffer != null) {
                         currentBuffer.onBufferClosed();
                     }
                 }
+                break;
+            }
+            case R.id.menu_quit: {
+                if (rsb != null) rsb.shutdown();
+                unbindService(mConnection);
+                mBound = false;
+                stopService(new Intent(this, RelayService.class));
+                finish();
                 break;
             }
             case R.id.menu_hotlist: {
