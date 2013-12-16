@@ -161,7 +161,7 @@ public class BufferFragment extends SherlockFragment implements BufferObserver, 
     }
 
     public void updateTitle() {
-        getActivity().setTitle(fragmentTitle);
+        if (fragmentTitle != null) getActivity().setTitle(fragmentTitle);
     }
 
     private void initView() {
@@ -180,7 +180,7 @@ public class BufferFragment extends SherlockFragment implements BufferObserver, 
         inputBox = (EditText) getView().findViewById(R.id.chatview_input);
         sendButton = (Button) getView().findViewById(R.id.chatview_send);
         tabButton = (Button) getView().findViewById(R.id.chatview_tab);
-        
+
         if (prefs.getBoolean("sendbtn_show", true)) {
             sendButton.setVisibility(View.VISIBLE);
         } else {
@@ -191,7 +191,7 @@ public class BufferFragment extends SherlockFragment implements BufferObserver, 
         } else {
             tabButton.setVisibility(View.GONE);
         }
-        
+
         chatlines.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.tips_list_item, message));
         // chatlines.setEmptyView(getView().findViewById(android.R.id.empty));
 
@@ -336,7 +336,7 @@ public class BufferFragment extends SherlockFragment implements BufferObserver, 
             tryTabComplete();
         }
     }
-    
+
     // Attempts to perform tab completion on the current input
     private void tryTabComplete() {
         if (!enableTabComplete || nickCache == null) {
@@ -404,12 +404,12 @@ public class BufferFragment extends SherlockFragment implements BufferObserver, 
         @Override
         public void run() {
             tabCompletingInProgress = false;
-            
+
             String input = inputBox.getText().toString();
             if (input.length() == 0) {
                 return; // Ignore empty input box
             }
-            
+
             // Check if it was a /buffer clear, /CL command, then clear the lines
             if (input.equals("/CL") || input.equals("/buffer clear")) {
                 chatlineAdapter.clearLines();
@@ -420,7 +420,7 @@ public class BufferFragment extends SherlockFragment implements BufferObserver, 
             rsb.sendMessage(message + "\n");
         }
     };
-    
+
     /*
      * This is related to the tap and hold menu that appears when clicking on a message
      */
@@ -446,20 +446,20 @@ public class BufferFragment extends SherlockFragment implements BufferObserver, 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (!(v instanceof ListView)) return;
-        
+
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         View selected = info.targetView;
         if (selected == null) return;
-        
-        
+
+
         TextView msg = (TextView)selected.findViewById(R.id.chatline_message);
         if (msg==null) return;
 
         contextMenuView = msg;
-        
+
         menu.setHeaderTitle("Copy?");
         menu.add(0, CONTEXT_MENU_COPY_TXT, 0, "Copy message text");
-        
+
         URLSpan[] urls = contextMenuView.getUrls();
         int i=0;
         for(URLSpan url: urls) {
