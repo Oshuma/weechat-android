@@ -240,8 +240,12 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
     @Override
     public void onBackPressed() {
         final BufferFragment bf = mainPagerAdapter.getCurrentBuffer();
-        if (bf != null) closeBuffer(bf.getBufferName());
-        if (viewPager != null) viewPager.setCurrentItem(0);
+        if (bf != null) {
+            closeBuffer(bf.getBufferName());
+            if (viewPager != null) viewPager.setCurrentItem(0);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
