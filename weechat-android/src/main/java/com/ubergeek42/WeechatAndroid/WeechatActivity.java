@@ -242,7 +242,7 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        
+
         if (viewPager.getCurrentItem()==0 && !tabletMode) {
             menu.findItem(R.id.menu_nicklist).setVisible(false);
             menu.findItem(R.id.menu_close).setVisible(false);
