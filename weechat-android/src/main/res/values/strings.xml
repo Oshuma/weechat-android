@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">weechat</string>
     <string name="sendButton">Send</string>
-    <string name="app_version">Weechat v0.10-lithium</string>
+    <string name="app_version">Weechat v0.10-oshuma</string>
     <string name="loading_please_wait">"Retrieving lines from buffer.\nPlease wait."</string>
 
     <string name="menu_wee">WeeMenu</string>
@@ -119,4 +119,7 @@
     <string name="relay_settings">Weechat Relay Settings</string>
     <string name="about_weechat">About Weechat</string>
     <string name="clear_ssl_certificates">Clear SSL Certificates</string>
+  <string name="created_by_ubergeek42">created by ubergeek42</string>
+  <string name="forked_from_lithium">forked from lithium</string>
+  <string name="github_link">http://github.com/Oshuma/weechat-android/</string>
 </resources>

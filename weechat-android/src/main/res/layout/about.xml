@@ -14,45 +14,14 @@
         android:text="@string/app_version"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/versionID"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:text="Unknown version ID"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/versionID"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:gravity="center"
-        android:text="Build Identifier(please include in bug reports):"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TextView
-        android:id="@+id/TextView05"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_centerHorizontal="true"
-        android:text="for Android"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
+  <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/TextView05"
         android:layout_centerHorizontal="true"
-        android:text="created by ubergeek42"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="@string/created_by_ubergeek42"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/textView1"/>
 
     <TextView
         android:id="@+id/textView25"
@@ -60,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
-        android:text="forked by lithium"
+        android:text="@string/forked_from_lithium"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -71,10 +40,9 @@
         android:layout_below="@+id/textView25"
         android:layout_marginTop="30dp"
         android:gravity="center"
-        android:text="http://github.com/lithium/weechat-android/"
+        android:text="@string/github_link"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:autoLink="web"/>
-
 
 
 </RelativeLayout>
