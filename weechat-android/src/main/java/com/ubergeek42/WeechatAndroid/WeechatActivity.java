@@ -55,15 +55,16 @@ import com.ubergeek42.weechat.relay.RelayConnectionHandler;
 import com.viewpagerindicator.TitlePageIndicator;
 
 public class WeechatActivity extends SherlockFragmentActivity implements RelayConnectionHandler, OnBufferSelectedListener, OnPageChangeListener {
-    
+    private final String TAG = "WeechatActivity";
+
     private static Logger logger = LoggerFactory.getLogger(WeechatActivity.class);
     private boolean mBound = false;
     private RelayServiceBinder rsb;
-    
+
     private SocketToggleConnection taskToggleConnection;
     private HotlistListAdapter hotlistListAdapter;
     private Menu actionBarMenu;
-    
+
     private ViewPager viewPager;
     private MainPagerAdapter mainPagerAdapter;
 //    private TitlePageIndicator titleIndicator;
@@ -80,39 +81,39 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
 
         // Load the layout
         setContentView(R.layout.main_screen);
-        
+
         BufferListFragment blf = (BufferListFragment) getSupportFragmentManager().findFragmentById(R.id.bufferlist_fragment);
         if (blf != null) {
             tabletMode = true;
         }
-        
+
         viewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        
+
         // Restore state if we have it
         if (savedInstanceState != null) {
-            // Load the previous BufferListFragment, and the Buffers that were open 
+            // Load the previous BufferListFragment, and the Buffers that were open
             int numpages = savedInstanceState.getInt("numpages");
-            
+
             ArrayList<BufferFragment> frags = new ArrayList<BufferFragment>();
             for(int i=0;i<numpages;i++) {
-                
+
                 if (!tabletMode && i==0) {
                     blf = (BufferListFragment)getSupportFragmentManager().getFragment(savedInstanceState, "saved_frag_0");
                     continue;
                 }
-                
+
                 BufferFragment f = (BufferFragment)getSupportFragmentManager().getFragment(savedInstanceState, "saved_frag_"+i);
                 if (f!=null)
                     frags.add(f);
             }
             mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), viewPager);
             mainPagerAdapter.setBuffers(frags);
-            
+
             if (!tabletMode)
                 mainPagerAdapter.setBufferList(blf);
         } else {
             mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), viewPager);
-            
+
             if (!tabletMode)
                 mainPagerAdapter.setBufferList(new BufferListFragment());
         }
@@ -130,13 +131,14 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
 
         // TODO Read preferences from background, its IO, 31ms strict mode!
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        
+
         updateTitle();
         getSupportActionBar().setHomeButtonEnabled(true);
-        
+
         // TODO: make notification load the right buffer
         // TODO: add preference to hide the TitlePageIndicator
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -147,7 +149,7 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
             }
         }
     }
-    
+
     @Override
     public void onBufferSelected(String buffer) {
        // Does the buffer actually exist?(If not, return)
@@ -157,7 +159,6 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
         mainPagerAdapter.openBuffer(buffer);
 //        titleIndicator.setCurrentItem(viewPager.getCurrentItem());
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -213,21 +214,21 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
             public void run() {
                 Toast.makeText(getBaseContext(), "Error: " + errorMsg, Toast.LENGTH_LONG).show();
             }
-        });        
+        });
         Log.d("WeechatActivity", "onError:" + errorMsg);
         if (extraData instanceof SSLException) {
             Log.d("[WeechatActivity]", "Cause: "+ ((SSLException)extraData).getCause());
             SSLException e1 = (SSLException) extraData;
             if (e1.getCause() instanceof CertificateException) {
                 CertificateException e2 = (CertificateException) e1.getCause();
-                
+
                 if (e2.getCause() instanceof CertPathValidatorException) {
                     CertPathValidatorException e = (CertPathValidatorException) e2.getCause();
-                    CertPath cp = e.getCertPath();                    
-                    
+                    CertPath cp = e.getCertPath();
+
                     // Set the cert error on the backend
                     rsb.setCertificateError((X509Certificate) cp.getCertificates().get(0));
-                    
+
                     // Start an activity to attempt establishing trust
                     Intent i = new Intent(this, SSLCertActivity.class);
                     startActivity(i);
@@ -236,6 +237,12 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        final BufferFragment bf = mainPagerAdapter.getCurrentBuffer();
+        if (bf != null) closeBuffer(bf.getBufferName());
+        if (viewPager != null) viewPager.setCurrentItem(0);
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -255,11 +262,6 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
     // Handle the options when the user presses the Menu key
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case android.R.id.home: {
-            if (viewPager != null)
-                viewPager.setCurrentItem(0);
-            break;
-        }
         case R.id.menu_connection_state: {
             if (rsb != null) {
                 taskToggleConnection = new SocketToggleConnection();
@@ -331,10 +333,10 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
     /**
      * Replacement method for onPrepareOptionsMenu due to rsb might be null on the event of clicking
      * the menu button.
-     * 
+     *
      * Hence our activity stores the menu references in onCreateOptionsMenu and we can update menu
      * items underway from events like onConnect.
-     * 
+     *
      * @param menu
      *            actionBarMenu to update context on
      */
@@ -410,11 +412,11 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
             supportInvalidateOptionsMenu();
         }
     }
-    
+
     /**
      * Service connection management...
      */
-    
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -463,7 +465,7 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
 
     /**
      * Part of OnPageChangeListener
-     * Used to change the title of the window when the user switches tabs 
+     * Used to change the title of the window when the user switches tabs
      */
     @Override
     public void onPageScrollStateChanged(int state) {
@@ -476,5 +478,5 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
         updateTitle();
     }
 
-    
+
 }
