@@ -67,7 +67,6 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
 
     private ViewPager viewPager;
     private MainPagerAdapter mainPagerAdapter;
-//    private TitlePageIndicator titleIndicator;
 
     private boolean tabletMode = false;
 
@@ -122,13 +121,6 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
         viewPager.setOnPageChangeListener(this);
         viewPager.setCurrentItem(0);
 
-        // see: http://stackoverflow.com/questions/11296411/fragmentstatepageradapter-illegalstateexception-myfragment-is-not-currently
-
-//        titleIndicator = (TitlePageIndicator) findViewById(R.id.main_titleviewpager);
-//        titleIndicator.setViewPager(viewPager);
-//        titleIndicator.setOnPageChangeListener(this);
-//        titleIndicator.setCurrentItem(0);
-
         // TODO Read preferences from background, its IO, 31ms strict mode!
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -157,7 +149,6 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
             return;
         }
         mainPagerAdapter.openBuffer(buffer);
-//        titleIndicator.setCurrentItem(viewPager.getCurrentItem());
     }
 
     @Override
@@ -251,6 +242,7 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        
         if (viewPager.getCurrentItem()==0 && !tabletMode) {
             menu.findItem(R.id.menu_nicklist).setVisible(false);
             menu.findItem(R.id.menu_close).setVisible(false);
@@ -266,68 +258,68 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
     // Handle the options when the user presses the Menu key
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_connection_state: {
-            if (rsb != null) {
-                taskToggleConnection = new SocketToggleConnection();
-                taskToggleConnection.execute();
+            case R.id.menu_connection_state: {
+                if (rsb != null) {
+                    taskToggleConnection = new SocketToggleConnection();
+                    taskToggleConnection.execute();
+                }
+                break;
             }
-            break;
-        }
-        case R.id.menu_preferences: {
-            Intent i = new Intent(this, WeechatPreferencesActivity.class);
-            startActivity(i);
-            break;
-        }
-        case R.id.menu_close: {
-            if (viewPager.getCurrentItem()>0 || tabletMode) {
+            case R.id.menu_preferences: {
+                Intent i = new Intent(this, WeechatPreferencesActivity.class);
+                startActivity(i);
+                break;
+            }
+            case R.id.menu_close: {
+                if (viewPager.getCurrentItem()>0 || tabletMode) {
+                    BufferFragment currentBuffer = mainPagerAdapter.getCurrentBuffer();
+                    if (currentBuffer != null) {
+                        currentBuffer.onBufferClosed();
+                    }
+                }
+                break;
+            }
+            case R.id.menu_hotlist: {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.hotlist);
+                builder.setAdapter(hotlistListAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int position) {
+                        HotlistItem hotlistItem = hotlistListAdapter.getItem(position);
+                        String name = hotlistItem.getFullName();
+                        onBufferSelected(name);
+                    }
+                });
+                builder.create().show();
+                break;
+            }
+            case R.id.menu_nicklist: {
+                // No nicklist if they aren't looking at a buffer
+                if (viewPager.getCurrentItem()==0 && !tabletMode) {
+                    break;
+                }
+
+                // TODO: check for null(should be covered by previous if statement
                 BufferFragment currentBuffer = mainPagerAdapter.getCurrentBuffer();
-                if (currentBuffer != null) {
-                    currentBuffer.onBufferClosed();
+                if (currentBuffer == null) break;
+                String[] nicks = currentBuffer.getNicklist();
+                if (nicks == null) {
+                    break;
                 }
-            }
-            break;
-        }
-        case R.id.menu_hotlist: {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.hotlist);
-            builder.setAdapter(hotlistListAdapter, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int position) {
-                    HotlistItem hotlistItem = hotlistListAdapter.getItem(position);
-                    String name = hotlistItem.getFullName();
-                    onBufferSelected(name);
-                }
-            });
-            builder.create().show();
-            break;
-        }
-        case R.id.menu_nicklist: {
-            // No nicklist if they aren't looking at a buffer
-            if (viewPager.getCurrentItem()==0 && !tabletMode) {
+
+                NickListAdapter nicklistAdapter = new NickListAdapter(WeechatActivity.this, nicks);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(getString(R.string.nicklist_menu) + " (" + nicks.length + ")");
+                builder.setAdapter(nicklistAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int position) {
+                        // TODO define something to happen here
+                    }
+                });
+                builder.create().show();
                 break;
             }
-
-            // TODO: check for null(should be covered by previous if statement
-            BufferFragment currentBuffer = mainPagerAdapter.getCurrentBuffer();
-            if (currentBuffer == null) break;
-            String[] nicks = currentBuffer.getNicklist();
-            if (nicks == null) {
-                break;
-            }
-
-            NickListAdapter nicklistAdapter = new NickListAdapter(WeechatActivity.this, nicks);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.nicklist_menu) + " (" + nicks.length + ")");
-            builder.setAdapter(nicklistAdapter, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int position) {
-                    // TODO define something to happen here
-                }
-            });
-            builder.create().show();
-            break;
-        }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -377,7 +369,6 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
             @Override
             public void run() {
                 mainPagerAdapter.closeBuffer(bufferName);
-//                titleIndicator.setCurrentItem(viewPager.getCurrentItem());
             }
         });
         updateTitle();
@@ -474,9 +465,11 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
     @Override
     public void onPageScrollStateChanged(int state) {
     }
+
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     }
+
     @Override
     public void onPageSelected(int position) {
         updateTitle();
