@@ -283,20 +283,20 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
             }
             break;
         }
-//        case R.id.menu_hotlist: {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            builder.setTitle(R.string.hotlist);
-//            builder.setAdapter(hotlistListAdapter, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialogInterface, int position) {
-//                    HotlistItem hotlistItem = hotlistListAdapter.getItem(position);
-//                    String name = hotlistItem.getFullName();
-//                    onBufferSelected(name);
-//                }
-//            });
-//            builder.create().show();
-//            break;
-//        }
+        case R.id.menu_hotlist: {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.hotlist);
+            builder.setAdapter(hotlistListAdapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int position) {
+                    HotlistItem hotlistItem = hotlistListAdapter.getItem(position);
+                    String name = hotlistItem.getFullName();
+                    onBufferSelected(name);
+                }
+            });
+            builder.create().show();
+            break;
+        }
         case R.id.menu_nicklist: {
             // No nicklist if they aren't looking at a buffer
             if (viewPager.getCurrentItem()==0 && !tabletMode) {

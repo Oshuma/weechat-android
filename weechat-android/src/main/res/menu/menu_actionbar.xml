@@ -6,7 +6,6 @@
         android:icon="@drawable/ic_1_navigation_cancel"
         android:showAsAction="never"
         android:title="@string/close"/>
-
     <item android:id="@+id/menu_nicklist"
         android:orderInCategory="2"
         android:icon="@drawable/ic_6_social_group"
@@ -24,4 +23,9 @@
         android:icon="@drawable/ic_2_action_settings"
         android:showAsAction="never"
         android:title="@string/preferences"/>
+
+    <item android:id="@+id/menu_hotlist"
+          android:showAsAction="always"
+          android:icon="@drawable/ic_3_rating_important"
+          android:title="@string/hotlist"/>
 </menu>
