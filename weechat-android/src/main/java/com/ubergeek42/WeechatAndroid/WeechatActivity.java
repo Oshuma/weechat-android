@@ -200,12 +200,6 @@ public class WeechatActivity extends SherlockFragmentActivity implements RelayCo
 
     @Override
     public void onError(final String errorMsg, Object extraData) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getBaseContext(), "Error: " + errorMsg, Toast.LENGTH_LONG).show();
-            }
-        });
         Log.d("WeechatActivity", "onError:" + errorMsg);
         if (extraData instanceof SSLException) {
             Log.d("[WeechatActivity]", "Cause: "+ ((SSLException)extraData).getCause());
