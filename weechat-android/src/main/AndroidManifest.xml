@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ubergeek42.WeechatAndroid"
     android:versionCode="12"
-    android:versionName="0.11-oshuma" >
+    android:versionName="0.12-oshuma" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="16" />
     <uses-permission android:name="android.permission.INTERNET"/>

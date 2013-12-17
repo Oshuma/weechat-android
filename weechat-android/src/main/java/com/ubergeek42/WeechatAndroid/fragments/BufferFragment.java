@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -33,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.ubergeek42.WeechatAndroid.ChatLinesAdapter;
@@ -45,6 +47,7 @@ import com.ubergeek42.weechat.BufferObserver;
 
 public class BufferFragment extends SherlockFragment implements BufferObserver, OnKeyListener,
         OnSharedPreferenceChangeListener, OnClickListener {
+    private static final String TAG = "BufferFragment";
 
     private static Logger logger = LoggerFactory.getLogger(BufferFragment.class);
 
@@ -388,15 +391,23 @@ public class BufferFragment extends SherlockFragment implements BufferObserver, 
             tabCompleteCurrentIndex = (tabCompleteCurrentIndex + 1) % tabCompleteMatches.size(); // next match
         }
 
-        String newtext = txt.substring(0, tabCompleteWordStart)
-                + tabCompleteMatches.get(tabCompleteCurrentIndex)
-                + txt.substring(tabCompleteWordEnd + 1);
-        tabCompleteWordEnd = tabCompleteWordStart
-                + tabCompleteMatches.get(tabCompleteCurrentIndex).length(); // end of new tabcomplete word
-        inputBox.setText(newtext);
-        inputBox.setSelection(tabCompleteWordEnd);
+        try {
+            String newtext = txt.substring(0, tabCompleteWordStart)
+                    + tabCompleteMatches.get(tabCompleteCurrentIndex)
+                    + txt.substring(tabCompleteWordEnd + 1);
 
-        return;
+            tabCompleteWordEnd = tabCompleteWordStart
+                    + tabCompleteMatches.get(tabCompleteCurrentIndex).length(); // end of new tabcomplete word
+
+            inputBox.setText(newtext);
+            inputBox.setSelection(tabCompleteWordEnd);
+        } catch (final StringIndexOutOfBoundsException e) {
+            Log.d(TAG, "tryTabComplete(): " + e.toString());
+            Toast.makeText(getActivity().getBaseContext(), R.string.could_not_complete_nick, Toast.LENGTH_SHORT).show();
+        } catch (final IndexOutOfBoundsException e) {
+            Log.d(TAG, "tryTabComplete(): " + e.toString());
+            Toast.makeText(getActivity().getBaseContext(), R.string.could_not_complete_nick, Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Sends the message if necessary

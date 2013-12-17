@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">weechat</string>
-    <string name="app_version">Weechat v0.11-oshuma</string>
+    <string name="app_version">Weechat v0.12-oshuma</string>
 
     <string name="sendButton">Send</string>
     <string name="loading_please_wait">"Retrieving lines from buffer.\nPlease wait."</string>
@@ -108,4 +108,5 @@
   <string name="created_by_ubergeek42">created by ubergeek42</string>
   <string name="forked_from_lithium">forked from lithium</string>
   <string name="github_link">http://github.com/Oshuma/weechat-android/</string>
+    <string name="could_not_complete_nick">Could not complete nick.</string>
 </resources>
